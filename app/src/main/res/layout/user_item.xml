@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/imageView_avatar"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_alignParentStart="true"
@@ -16,20 +16,20 @@
         app:srcCompat="@mipmap/ic_launcher" />
 
     <TextView
-        android:textSize="20sp"
         android:id="@+id/textView_name"
         android:layout_width="197dp"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/textView_description"
-        android:layout_alignTop="@+id/imageView"
-        android:text="TextView" />
+        android:layout_alignTop="@+id/imageView_avatar"
+        android:text="TextView"
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/textView_description"
         android:layout_width="213dp"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/imageView"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="130dp"
+        android:layout_alignBottom="@+id/imageView_avatar"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="53dp"
         android:text="TextView" />
 </RelativeLayout>
