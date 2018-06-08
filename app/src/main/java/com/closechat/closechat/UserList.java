@@ -1,6 +1,9 @@
 package com.closechat.closechat;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,12 +23,15 @@ public class UserList extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_list);
 
+        Intent intent = getIntent();
 
         TextView textView_login = (TextView) findViewById(R.id.textView_login);
-        textView_login.setText("grzegorz brzęczyszczykiewicz");
+        textView_login.setText(intent.getStringExtra("login"));
 
-        ImageView imageView_avatar=(ImageView)findViewById(R.id.imageView_user_login);
-        imageView_avatar.setImageResource(IMAGES[0]);
+        byte[] imgByte = intent.getByteArrayExtra("avatar");
+        Bitmap bmp = BitmapFactory.decodeByteArray(imgByte, 0,imgByte.length);
+        ImageView imageView_avatar = (ImageView) findViewById(R.id.imageView_user_login);
+        imageView_avatar.setImageBitmap(bmp);
 
         ListView userList = (ListView) findViewById(R.id.ListView);
 
@@ -54,7 +60,7 @@ public class UserList extends Activity {
         public View getView(int i, View view, ViewGroup viewGroup) {
             view = getLayoutInflater().inflate(R.layout.user_item, null);
 
-            ImageView imageView_avatar=(ImageView)view.findViewById(R.id.imageView_avatar);
+            ImageView imageView_avatar = (ImageView) view.findViewById(R.id.imageView_avatar);
             TextView textView_name = (TextView) view.findViewById(R.id.textView_name);
             TextView textView_description = (TextView) view.findViewById(R.id.textView_description);
 

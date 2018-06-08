@@ -23,7 +23,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignStart="@+id/textView_login"
         android:layout_marginTop="66dp"
-        android:text="Activate"
+        android:text="Active"
         android:textSize="20dp" />
 
     <ImageView
