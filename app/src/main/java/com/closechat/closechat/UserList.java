@@ -10,7 +10,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class UserList extends Activity {
 
@@ -37,8 +39,25 @@ public class UserList extends Activity {
 
         UsserItem user = new UsserItem();
         userList.setAdapter(user);
+
+        addActionToViews();
     }
 
+    private void addActionToViews() {
+
+        final Switch switchActive = findViewById(R.id.switch_active);
+        switchActive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (switchActive.isChecked()) {
+                    switchActive.setText("Active");
+                } else {
+                    switchActive.setText("Inactive");
+                }
+            }
+        });
+    }
     class UsserItem extends BaseAdapter {
 
         @Override

@@ -17,12 +17,13 @@
         android:textSize="26dp" />
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/switch_active"
         android:layout_width="227dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignStart="@+id/textView_login"
         android:layout_marginTop="66dp"
+        android:checked="true"
         android:text="Active"
         android:textSize="20dp" />
 
