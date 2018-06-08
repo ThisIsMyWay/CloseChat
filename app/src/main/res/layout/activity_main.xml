@@ -40,7 +40,7 @@
                 android:background="@null"
                 android:scaleType="fitXY"
                 android:src="@drawable/avatar_icon"
-                android:onClick="chooseAvatarAction"/>
+                android:onClick="chooseAvatar"/>
 
             <EditText
                 android:id="@+id/login_edit_text"
