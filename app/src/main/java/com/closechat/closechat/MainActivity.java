@@ -85,9 +85,6 @@ public class MainActivity extends Activity {
     }
 
     private void retrieveAvatar() {
-        ImagePicker.create(this) // Activity or Fragment
-                .toolbarImageTitle("Tap to select")
-                .limit(1)
-                .start();
+        ImagePicker.cameraOnly().start(this);
     }
 }
