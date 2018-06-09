@@ -2,6 +2,7 @@ package com.closechat.closechat;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -40,7 +41,7 @@ public class UserList extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_list);
-
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         Intent intent = getIntent();
 
         TextView textView_login = (TextView) findViewById(R.id.textView_login);
@@ -57,7 +58,7 @@ public class UserList extends Activity {
         userList = (ListView) findViewById(R.id.ListView);
 
 
-        friendsNearby.setup("Ivan", linkToImg, UserList.this);
+        friendsNearby.setup(textView_login.getText().toString(), linkToImg, UserList.this);
 
         // TODO periodically pull friends
         Thread thread = new Thread() {
