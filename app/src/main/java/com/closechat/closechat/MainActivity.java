@@ -2,26 +2,33 @@ package com.closechat.closechat;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
-import com.closechat.closechat.utils.Utils;
+
+import com.closechat.closechat.imageshare.apimodel.ImageResponse;
+import com.closechat.closechat.imageshare.apimodel.Upload;
+import com.closechat.closechat.imageshare.service.UploadService;
 import com.esafirm.imagepicker.features.ImagePicker;
 import com.esafirm.imagepicker.model.Image;
-import java.io.ByteArrayOutputStream;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.io.File;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class MainActivity extends Activity {
+    public static final String LOGIN_EXTRA_DATA_ID = "login";
+    public static final String AVATAR_FROM_RES_EXTRA_DATA_ID = "avatarFromRes";
+    public static final String AVATAR_FROM_HTTP_LINK_EXTRA_DATA_ID = "avatarFromHttp";
+
 
     ImageButton chooseAvatarBtn;
     EditText loginEditText;
@@ -36,34 +43,6 @@ public class MainActivity extends Activity {
 
         connectWithView();
         addActionToViews();
-
-
-/*        //TODO change name and url to real
-        friendsNearby.setup("Ivan", "https://image.ibb.co/kwbyNo/avatar.jpg", MainActivity.this);
-
-        // TODO periodically pull friends
-        final SortedSet<Friend> friends = new TreeSet<>();
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                for (;;) {
-                    List<Friend> res = friendsNearby.discoverFriends();
-                    friends.clear();
-                    friends.addAll(res);
-                    // do stuff in a separate thread
-                    uiCallback.sendEmptyMessage(0);
-                    try {
-                        Thread.sleep(2000);    // sleep for 3 seconds
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-
-            }
-        };
-        thread.start();*/
     }
 
     private Handler uiCallback = new Handler() {
@@ -83,16 +62,8 @@ public class MainActivity extends Activity {
         logInActionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String loginStr = loginEditText.getText().toString().trim();
-                if (loginStr.length() > 0) {
-                    Intent myIntent = new Intent(MainActivity.this, UserList.class);
-                    myIntent.putExtra("login", loginStr);
-                    if (pathToImage == null) {
-                        myIntent.putExtra("avatarFromRes", R.drawable.avatar_icon);
-                    } else {
-                        myIntent.putExtra("avatarFromFile", pathToImage);
-                    }
-                    MainActivity.this.startActivity(myIntent);
+                if (loginEditText.getText().toString().trim().length() > 0) {
+                    sharePictureAndNavigate();
                 } else {
                     Toast.makeText( MainActivity.this, "Write your login, please.", Toast.LENGTH_LONG).show();
                 }
@@ -100,17 +71,10 @@ public class MainActivity extends Activity {
         });
     }
 
-    private byte[] retrieveImage(ImageButton imageButton) {
-        Bitmap bitmap =  Utils.drawableToBitmap(imageButton.getDrawable());
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        return baos.toByteArray();
-    }
 
+    //Retrieving avatar from camera
     public void chooseAvatar(View view) {
-
-            retrieveAvatar();
-
+        ImagePicker.cameraOnly().start(this);
     }
 
     String pathToImage = null;
@@ -124,12 +88,58 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void retrieveAvatar() {
-        ImagePicker.cameraOnly().start(this);
+    // upload photo to imugr
+    private Upload upload;
+    private File chosenFile;
+
+    private void sharePictureAndNavigate() {
+        chosenFile = new File(pathToImage);
+
+        if (havePictureToShare()) {
+            createUpload(chosenFile);
+            new UploadService(this).Execute(upload, new UiCallback());
+        } else {
+            navigateToUserList(null);
+        }
     }
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        friendsNearby.teardown(MainActivity.this);
+
+    private boolean havePictureToShare() {
+        return chosenFile != null;
     }
+
+
+    private void createUpload(File image) {
+        upload = new Upload();
+        upload.image = image;
+        upload.title = String.valueOf("avatar of ") + loginEditText.getText();
+    }
+
+
+    private class UiCallback implements Callback<ImageResponse> {
+
+        @Override
+        public void success(ImageResponse imageResponse, Response response) {
+            navigateToUserList(response);
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+            if (error == null) {
+                Toast.makeText( MainActivity.this, "No internet connection.", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private void navigateToUserList(@Nullable Response response) {
+        Intent myIntent = new Intent(MainActivity.this, UserList.class);
+        myIntent.putExtra(LOGIN_EXTRA_DATA_ID, loginEditText.getText().toString().trim());
+        if (response == null) {
+            myIntent.putExtra(AVATAR_FROM_RES_EXTRA_DATA_ID, R.drawable.avatar_icon);
+        } else {
+            myIntent.putExtra(AVATAR_FROM_HTTP_LINK_EXTRA_DATA_ID, response.getUrl());
+        }
+        MainActivity.this.startActivity(myIntent);
+    }
+
 }
+

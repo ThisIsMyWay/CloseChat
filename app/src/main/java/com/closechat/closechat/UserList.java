@@ -43,23 +43,31 @@ public class UserList extends Activity {
         Intent intent = getIntent();
 
         TextView textView_login = (TextView) findViewById(R.id.textView_login);
-        textView_login.setText(intent.getStringExtra("login"));
+        textView_login.setText(intent.getStringExtra(MainActivity.LOGIN_EXTRA_DATA_ID));
 
-        String pathToImg = intent.getStringExtra("avatarFromFile");
+        String linkToImg = intent.getStringExtra(MainActivity.AVATAR_FROM_HTTP_LINK_EXTRA_DATA_ID);
         ImageView imageView_avatar = (ImageView) findViewById(R.id.imageView_user_login);
-        if (pathToImg != null) {
-            File imgFile = new File(pathToImg);
-            if(imgFile.exists()){
-                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                imageView_avatar.setImageBitmap(myBitmap);
-            }
+        if (linkToImg != null) {
+            picasso.load(linkToImg).into(imageView_avatar, new Callback() {
+                @Override
+                public void onSuccess() {
+                    Log.i("LIST", "Successfully downloaded my avatar");
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.e("LIST", "Problem", e);
+                }
+            });
+
         } else {
-            imageView_avatar.setImageResource(intent.getIntExtra("avatarFromRes", 0));
+            imageView_avatar.setImageResource(intent.getIntExtra( MainActivity.AVATAR_FROM_RES_EXTRA_DATA_ID, 0));
         }
 
         userList = (ListView) findViewById(R.id.ListView);
 
-        friendsNearby.setup("Ivan", "https://image.ibb.co/kwbyNo/avatar.jpg", UserList.this);
+
+        friendsNearby.setup("Ivan", linkToImg, UserList.this);
 
         // TODO periodically pull friends
         Thread thread = new Thread() {
@@ -67,10 +75,13 @@ public class UserList extends Activity {
             public void run() {
                 for (;;) {
                     List<Friend> res = friendsNearby.discoverFriends();
-                    friends.clear();
-                    friends.addAll(res);
-                    // do stuff in a separate thread
-                    uiCallback.sendEmptyMessage(0);
+                    if (friends.containsAll(res)) {
+                        friends.clear();
+                        friends.addAll(res);
+                        // do stuff in a separate thread
+                        uiCallback.sendEmptyMessage(0);
+                    }
+
                     try {
                         Thread.sleep(2000);    // sleep for 3 seconds
                     } catch (InterruptedException e) {
@@ -134,13 +145,6 @@ public class UserList extends Activity {
             TextView textView_name = (TextView) view.findViewById(R.id.textView_name);
             TextView textView_description = (TextView) view.findViewById(R.id.textView_description);
 
-            //imageView_avatar.setImageResource(friends.get(i).getAvatarUrl());
-            /*File imgFile = new File(friends.get(i).getAvatarUrl());
-            if(imgFile.exists()){
-                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                imageView_avatar.setImageBitmap(myBitmap);
-            }*/
-
             textView_name.setText(friends.get(i).getName());
             String avatarUrl = friends.get(i).getAvatarUrl();
             picasso.load(avatarUrl).into(imageView_avatar, new Callback() {
@@ -156,5 +160,11 @@ public class UserList extends Activity {
             });
             return view;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        friendsNearby.teardown(UserList.this);
     }
 }

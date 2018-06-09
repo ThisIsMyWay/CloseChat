@@ -5,10 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
-/**
- * Created by Wojciech on 2018-06-08.
- */
-
 public class Utils {
     public static Bitmap drawableToBitmap (Drawable drawable) {
         Bitmap bitmap = null;
