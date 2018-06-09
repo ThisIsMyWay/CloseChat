@@ -42,7 +42,7 @@ public class FriendsNearby {
                     String avatarUrl = split[2];
                     Friend friend = new Friend(name, avatarUrl);
                     friendsNearby.add(friend);
-                    Log.e(TAG, "DISCOVERED: " + friend);
+                    Log.e(TAG, "DISCOVERED: " + friend + " : " + device.getAddress());
                 }
             }
             else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {

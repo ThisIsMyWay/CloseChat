@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -15,13 +16,17 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+
 import java.io.File;
 
 public class UserList extends Activity {
 
-    int[] IMAGES = {R.drawable.avatar_icon, R.drawable.avatar_icon, R.drawable.avatar_icon};
+    String[] IMAGES = {"https://image.ibb.co/kwbyNo/avatar.jpg", "https://image.ibb.co/kwbyNo/avatar.jpg", "https://image.ibb.co/kwbyNo/avatar.jpg"};
     String[] NAMES = {"user1", "koziolekmatolek", "agent BOLEK"};
     String[] DESCRIPTION = {"jakiś nob", "kolo z Pacanowa", "a ten był prezydentem"};
+    private final Picasso picasso = Picasso.get();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +41,6 @@ public class UserList extends Activity {
         String pathToImg = intent.getStringExtra("avatarFromFile");
         ImageView imageView_avatar = (ImageView) findViewById(R.id.imageView_user_login);
         if (pathToImg != null) {
-
             File imgFile = new File(pathToImg);
             if(imgFile.exists()){
                 Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
@@ -88,14 +92,24 @@ public class UserList extends Activity {
         }
 
         @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
+        public View getView(final int i, View view, ViewGroup viewGroup) {
             view = getLayoutInflater().inflate(R.layout.user_item, null);
 
             ImageView imageView_avatar = (ImageView) view.findViewById(R.id.imageView_avatar);
             TextView textView_name = (TextView) view.findViewById(R.id.textView_name);
             TextView textView_description = (TextView) view.findViewById(R.id.textView_description);
 
-            imageView_avatar.setImageResource(IMAGES[i]);
+            picasso.load(IMAGES[i]).into(imageView_avatar, new Callback() {
+                @Override
+                public void onSuccess() {
+                    Log.i("LIST", "Successfully downloaded avatar: " + IMAGES[i]);
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.e("LIST", "Problem", e);
+                }
+            });
             textView_name.setText(NAMES[i]);
             textView_description.setText(DESCRIPTION[i]);
             return view;
