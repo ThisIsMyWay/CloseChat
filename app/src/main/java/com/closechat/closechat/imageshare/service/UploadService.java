@@ -79,15 +79,8 @@ public class UploadService {
     }
 
     private RestAdapter buildRestAdapter() {
-        RestAdapter imgurAdapter = new RestAdapter.Builder()
+        return new RestAdapter.Builder()
                 .setEndpoint(ImgurAPI.server)
                 .build();
-
-        /*
-        Set rest adapter logging if we're already logging
-        */
-        if (Constants.LOGGING)
-            imgurAdapter.setLogLevel(RestAdapter.LogLevel.FULL);
-        return imgurAdapter;
     }
 }
