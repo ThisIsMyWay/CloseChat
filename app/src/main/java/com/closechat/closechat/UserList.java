@@ -75,7 +75,7 @@ public class UserList extends Activity {
                     //}
 
                     try {
-                        Thread.sleep(10000);    // sleep for 3 seconds
+                        Thread.sleep(3000);    // sleep for 3 seconds
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -83,15 +83,17 @@ public class UserList extends Activity {
             }
         };
         thread.start();
-
         UserItem user = new UserItem();
         userList.setAdapter(user);
+
         addActionToViews();
     }
 
     private Handler uiCallback = new Handler () {
         public void handleMessage (Message msg) {
-           userList.invalidate();
+            UserItem user = new UserItem();
+            userList.setAdapter(user);
+            userList.invalidate();
         }
     };
 

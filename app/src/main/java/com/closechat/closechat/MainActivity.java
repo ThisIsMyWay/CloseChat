@@ -47,11 +47,11 @@ public class MainActivity extends Activity {
         addActionToViews();
     }
 
-    private Handler uiCallback = new Handler() {
+/*    private Handler uiCallback = new Handler() {
         public void handleMessage (Message msg) {
 
         }
-    };
+    };*/
 
     private void connectWithView() {
         chooseAvatarBtn = this.findViewById(R.id.choose_avatar_btn);
