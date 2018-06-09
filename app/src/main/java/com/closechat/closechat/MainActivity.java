@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +17,7 @@ import com.closechat.closechat.utils.Utils;
 import com.esafirm.imagepicker.features.ImagePicker;
 import com.esafirm.imagepicker.model.Image;
 import java.io.ByteArrayOutputStream;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -35,7 +38,7 @@ public class MainActivity extends Activity {
         addActionToViews();
 
 
-        //TODO change name and url to real
+/*        //TODO change name and url to real
         friendsNearby.setup("Ivan", "https://image.ibb.co/kwbyNo/avatar.jpg", MainActivity.this);
 
         // TODO periodically pull friends
@@ -43,12 +46,31 @@ public class MainActivity extends Activity {
         Thread thread = new Thread() {
             @Override
             public void run() {
-                SortedSet<Friend> res = friendsNearby.discoverFriends();
-                friends.addAll(res);
+                for (;;) {
+                    List<Friend> res = friendsNearby.discoverFriends();
+                    friends.clear();
+                    friends.addAll(res);
+                    // do stuff in a separate thread
+                    uiCallback.sendEmptyMessage(0);
+                    try {
+                        Thread.sleep(2000);    // sleep for 3 seconds
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+
             }
         };
-        thread.start();
+        thread.start();*/
     }
+
+    private Handler uiCallback = new Handler() {
+        public void handleMessage (Message msg) {
+
+        }
+    };
 
     private void connectWithView() {
         chooseAvatarBtn = this.findViewById(R.id.choose_avatar_btn);

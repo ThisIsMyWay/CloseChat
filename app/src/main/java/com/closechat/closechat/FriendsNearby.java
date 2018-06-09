@@ -13,6 +13,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -21,7 +23,7 @@ public class FriendsNearby {
     public static final String DELIM = ">=<";
     public static final String MARKER = "CLOSECHAT";
 
-    private SortedSet<Friend> friendsNearby = new TreeSet<>();
+    private List<Friend> friendsNearby = new LinkedList<>();
     private volatile boolean discoveryFinished;
 
     private final BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -85,7 +87,7 @@ public class FriendsNearby {
      * Usually lasts ~12s
      * @return Friends discovered nearby
      */
-    public SortedSet<Friend> discoverFriends() {
+    public List<Friend> discoverFriends() {
         if (mBluetoothAdapter.isDiscovering())
             mBluetoothAdapter.cancelDiscovery();
 

@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -16,13 +18,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class UserList extends Activity {
+    final List<Friend> friends = Collections.synchronizedList(  new LinkedList<Friend>());
 
     int[] IMAGES = {R.drawable.avatar_icon, R.drawable.avatar_icon, R.drawable.avatar_icon};
     String[] NAMES = {"user1", "koziolekmatolek", "agent BOLEK"};
     String[] DESCRIPTION = {"jakiś nob", "kolo z Pacanowa", "a ten był prezydentem"};
-
+    FriendsNearby friendsNearby = new FriendsNearby();
+    ListView userList = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,13 +55,41 @@ public class UserList extends Activity {
             imageView_avatar.setImageResource(intent.getIntExtra("avatarFromRes", 0));
         }
 
-        ListView userList = (ListView) findViewById(R.id.ListView);
+        userList = (ListView) findViewById(R.id.ListView);
 
+        friendsNearby.setup("Ivan", "https://image.ibb.co/kwbyNo/avatar.jpg", UserList.this);
+
+        // TODO periodically pull friends
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                for (;;) {
+                    List<Friend> res = friendsNearby.discoverFriends();
+                    friends.clear();
+                    friends.addAll(res);
+                    // do stuff in a separate thread
+                    uiCallback.sendEmptyMessage(0);
+                    try {
+                        Thread.sleep(2000);    // sleep for 3 seconds
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        thread.start();
         UsserItem user = new UsserItem();
         userList.setAdapter(user);
 
         addActionToViews();
     }
+
+    private Handler uiCallback = new Handler () {
+        public void handleMessage (Message msg) {
+           userList.invalidate();
+        }
+    };
+
 
     private void addActionToViews() {
 
@@ -74,7 +111,7 @@ public class UserList extends Activity {
 
         @Override
         public int getCount() {
-            return NAMES.length;
+            return friends.size();
         }
 
         @Override
@@ -95,9 +132,14 @@ public class UserList extends Activity {
             TextView textView_name = (TextView) view.findViewById(R.id.textView_name);
             TextView textView_description = (TextView) view.findViewById(R.id.textView_description);
 
-            imageView_avatar.setImageResource(IMAGES[i]);
-            textView_name.setText(NAMES[i]);
-            textView_description.setText(DESCRIPTION[i]);
+            //imageView_avatar.setImageResource(friends.get(i).getAvatarUrl());
+            /*File imgFile = new File(friends.get(i).getAvatarUrl());
+            if(imgFile.exists()){
+                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                imageView_avatar.setImageBitmap(myBitmap);
+            }*/
+
+            textView_name.setText(friends.get(i).getName());
             return view;
         }
     }
