@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 public class UserList extends Activity {
 
-    int[] IMAGES = {R.drawable.avatar, R.drawable.avatar, R.drawable.avatar};
+    int[] IMAGES = {R.drawable.avatar_icon, R.drawable.avatar_icon, R.drawable.avatar_icon};
     String[] NAMES = {"user1", "koziolekmatolek", "agent BOLEK"};
     String[] DESCRIPTION = {"jakiś nob", "kolo z Pacanowa", "a ten był prezydentem"};
 

@@ -35,5 +35,5 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="20dp"
         android:scaleType="fitXY"
-        app:srcCompat="@drawable/avatar" />
+        app:srcCompat="@drawable/avatar_icon" />
 </RelativeLayout>
