@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.File;
 
 public class UserList extends Activity {
 
@@ -30,10 +33,18 @@ public class UserList extends Activity {
         TextView textView_login = (TextView) findViewById(R.id.textView_login);
         textView_login.setText(intent.getStringExtra("login"));
 
-        byte[] imgByte = intent.getByteArrayExtra("avatar");
-        Bitmap bmp = BitmapFactory.decodeByteArray(imgByte, 0,imgByte.length);
+        String pathToImg = intent.getStringExtra("avatarFromFile");
         ImageView imageView_avatar = (ImageView) findViewById(R.id.imageView_user_login);
-        imageView_avatar.setImageBitmap(bmp);
+        if (pathToImg != null) {
+
+            File imgFile = new File(pathToImg);
+            if(imgFile.exists()){
+                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                imageView_avatar.setImageBitmap(myBitmap);
+            }
+        } else {
+            imageView_avatar.setImageResource(intent.getIntExtra("avatarFromRes", 0));
+        }
 
         ListView userList = (ListView) findViewById(R.id.ListView);
 
@@ -58,6 +69,7 @@ public class UserList extends Activity {
             }
         });
     }
+
     class UsserItem extends BaseAdapter {
 
         @Override
