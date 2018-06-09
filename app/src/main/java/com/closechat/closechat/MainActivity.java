@@ -36,8 +36,6 @@ public class MainActivity extends Activity {
     EditText loginEditText;
     Button logInActionBtn;
 
-    FriendsNearby friendsNearby = new FriendsNearby();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,12 +44,6 @@ public class MainActivity extends Activity {
         connectWithView();
         addActionToViews();
     }
-
-    private Handler uiCallback = new Handler() {
-        public void handleMessage (Message msg) {
-
-        }
-    };
 
     private void connectWithView() {
         chooseAvatarBtn = this.findViewById(R.id.choose_avatar_btn);
