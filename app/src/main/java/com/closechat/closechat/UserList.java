@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -48,18 +49,7 @@ public class UserList extends Activity {
         String linkToImg = intent.getStringExtra(MainActivity.AVATAR_FROM_HTTP_LINK_EXTRA_DATA_ID);
         ImageView imageView_avatar = (ImageView) findViewById(R.id.imageView_user_login);
         if (linkToImg != null) {
-            picasso.load(linkToImg).into(imageView_avatar, new Callback() {
-                @Override
-                public void onSuccess() {
-                    Log.i("LIST", "Successfully downloaded my avatar");
-                }
-
-                @Override
-                public void onError(Exception e) {
-                    Log.e("LIST", "Problem", e);
-                }
-            });
-
+            imageView_avatar.setImageDrawable(Drawable.createFromPath(intent.getStringExtra(MainActivity.AVATAR_FROM_PATH_EXTRA_DATA_ID)));
         } else {
             imageView_avatar.setImageResource(intent.getIntExtra( MainActivity.AVATAR_FROM_RES_EXTRA_DATA_ID, 0));
         }

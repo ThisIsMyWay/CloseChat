@@ -28,6 +28,7 @@ public class MainActivity extends Activity {
     public static final String LOGIN_EXTRA_DATA_ID = "login";
     public static final String AVATAR_FROM_RES_EXTRA_DATA_ID = "avatarFromRes";
     public static final String AVATAR_FROM_HTTP_LINK_EXTRA_DATA_ID = "avatarFromHttp";
+    public static final String AVATAR_FROM_PATH_EXTRA_DATA_ID = "avatarFromPath";
 
 
     ImageButton chooseAvatarBtn;
@@ -119,7 +120,7 @@ public class MainActivity extends Activity {
 
         @Override
         public void success(ImageResponse imageResponse, Response response) {
-            navigateToUserList(response);
+            navigateToUserList(imageResponse);
         }
 
         @Override
@@ -130,13 +131,14 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void navigateToUserList(@Nullable Response response) {
+    private void navigateToUserList(@Nullable ImageResponse response) {
         Intent myIntent = new Intent(MainActivity.this, UserList.class);
         myIntent.putExtra(LOGIN_EXTRA_DATA_ID, loginEditText.getText().toString().trim());
         if (response == null) {
             myIntent.putExtra(AVATAR_FROM_RES_EXTRA_DATA_ID, R.drawable.avatar_icon);
         } else {
-            myIntent.putExtra(AVATAR_FROM_HTTP_LINK_EXTRA_DATA_ID, response.getUrl());
+            myIntent.putExtra(AVATAR_FROM_PATH_EXTRA_DATA_ID, pathToImage);
+            myIntent.putExtra(AVATAR_FROM_HTTP_LINK_EXTRA_DATA_ID, response.data.link);
         }
         MainActivity.this.startActivity(myIntent);
     }
