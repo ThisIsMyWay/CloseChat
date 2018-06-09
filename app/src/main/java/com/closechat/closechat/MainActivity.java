@@ -10,10 +10,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import com.closechat.closechat.imageshare.apimodel.ImageResponse;
+import com.closechat.closechat.imageshare.apimodel.Upload;
+import com.closechat.closechat.imageshare.service.UploadService;
 import com.closechat.closechat.utils.Utils;
 import com.esafirm.imagepicker.features.ImagePicker;
 import com.esafirm.imagepicker.model.Image;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class MainActivity extends Activity {
 
@@ -38,8 +47,6 @@ public class MainActivity extends Activity {
 
 
     private void addActionToViews() {
-
-
         logInActionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -50,9 +57,10 @@ public class MainActivity extends Activity {
                     if (pathToImage == null) {
                         myIntent.putExtra("avatarFromRes", R.drawable.avatar_icon);
                     } else {
+                        chosenFile = new File(pathToImage);
                         myIntent.putExtra("avatarFromFile", pathToImage);
                     }
-                    MainActivity.this.startActivity(myIntent);
+                    uploadChoosenAvatar();
                 } else {
                     Toast.makeText( MainActivity.this, "Write your login, please.", Toast.LENGTH_LONG).show();
                 }
@@ -60,17 +68,45 @@ public class MainActivity extends Activity {
         });
     }
 
-    private byte[] retrieveImage(ImageButton imageButton) {
-        Bitmap bitmap =  Utils.drawableToBitmap(imageButton.getDrawable());
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        return baos.toByteArray();
+
+
+
+    private Upload upload;
+    private File chosenFile;
+
+    private void uploadChoosenAvatar() {
+        if (chosenFile == null) return;
+        createUpload(chosenFile);
+
+        new UploadService(this).Execute(upload, new UiCallback());
+    }
+
+    private void createUpload(File image) {
+        upload = new Upload();
+
+        upload.image = image;
+        upload.title = String.valueOf("avatar of ") + loginEditText.getText();
+    }
+
+
+    private class UiCallback implements Callback<ImageResponse> {
+
+        @Override
+        public void success(ImageResponse imageResponse, Response response) {
+//                    MainActivity.this.startActivity(myIntent);
+
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+            if (error == null) {
+                Toast.makeText( MainActivity.this, "No internet connection.", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     public void chooseAvatar(View view) {
-
             retrieveAvatar();
-
     }
 
     String pathToImage = null;

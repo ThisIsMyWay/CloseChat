@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">CloseChat</string>
+    <string name="upload_succed_notify">Photo uploaded</string>
+    <string name="upload_progress_notify">Uploading photo in progress...</string>
+    <string name="upload_fail_notify">Sorry, we couldn\'t upload your photo :(</string>
+    <string name="notification_share_link">some notify</string>
 </resources>
