@@ -30,6 +30,5 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/imageView_avatar"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="53dp"
-        android:text="TextView" />
+        android:layout_marginEnd="53dp" />
 </RelativeLayout>

@@ -65,15 +65,16 @@ public class UserList extends Activity {
             public void run() {
                 for (;;) {
                     List<Friend> res = friendsNearby.discoverFriends();
-                    if (friends.containsAll(res)) {
+                    //if (!friends.containsAll(res)) {
                         friends.clear();
                         friends.addAll(res);
                         // do stuff in a separate thread
                         uiCallback.sendEmptyMessage(0);
-                    }
+
+                    //}
 
                     try {
-                        Thread.sleep(2000);    // sleep for 3 seconds
+                        Thread.sleep(10000);    // sleep for 3 seconds
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -81,9 +82,9 @@ public class UserList extends Activity {
             }
         };
         thread.start();
+
         UserItem user = new UserItem();
         userList.setAdapter(user);
-
         addActionToViews();
     }
 
@@ -140,7 +141,7 @@ public class UserList extends Activity {
             picasso.load(avatarUrl).into(imageView_avatar, new Callback() {
                 @Override
                 public void onSuccess() {
-                    Log.i("LIST", "Successfully downloaded avatar: " + IMAGES[i]);
+                    Log.i("LIST", "Successfully downloaded avatar: ");
                 }
 
                 @Override
